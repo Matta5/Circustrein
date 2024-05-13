@@ -3,51 +3,74 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Circustrein;
 
 namespace Circustrein
 {
-	public class Train
-	{
-		public static List<List<Animal>> DistributeAnimals(List<Animal> animals)
-		{
-			var wagons = new List<List<Animal>>();
-			wagons.Add(new List<Animal>());
+    public class Train
+    {
+        public static List<Wagon> DistributeAnimals(List<Animal> animals)
+        {
+            var wagons = new List<Wagon>();
+            wagons.Add(new Wagon());
 
-			foreach (var animal in animals)
-			{
-				bool added = false;
+            // Group animals by type and count
+            var groupedAnimals = animals.GroupBy(a => new { a.Food, a.Size })
+                                        .Select(g => new { Type = g.Key, Count = g.Count() })
+                                        .ToList();
 
-				foreach (var wagon in wagons)
-				{
-					if (wagon.Sum(a => (int)a.Size) + (int)animal.Size <= 10 &&
-						wagon.All(a => (a.Food != FoodType.Carnivore || (a.Food == FoodType.Carnivore && a.Size < animal.Size))))
-					{
-						wagon.Add(animal);
-						added = true;
-						break;
-					}
-				}
+            // Sort groups by food type, size, and count
+            var sortedGroups = groupedAnimals.OrderByDescending(g => g.Type.Food)
+                                             .ThenByDescending(g => g.Type.Size)
+                                             .ThenBy(g => g.Count)
+                                             .ToList();
 
-				if (!added)
-				{
-					wagons.Add(new List<Animal> { animal });
-				}
+            foreach (var group in sortedGroups)
+            {
+                for (int i = 0; i < group.Count; i++)
+                {
+                    var animal = new Animal { Food = group.Type.Food, Size = group.Type.Size };
 
-			}
-			return wagons;
+                    bool added = false;
 
-		}
-		public static void PrintWagons(List<List<Animal>> wagons)
-		{
-			for (int i = 0; i < wagons.Count; i++)
-			{
-				Console.WriteLine($"Wagon {i + 1}:");
-				foreach (var animal in wagons[i])
-				{
-					Console.WriteLine($"  {animal.Name} - Size: {animal.Size}, Food: {animal.Food}");
-				}
-				Console.WriteLine();
-			}
-		}
-	}
+                    foreach (var wagon in wagons)
+                    {
+                        if (wagon.CanAddAnimal(animal))
+                        {
+                            wagon.Add(animal);
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    if (!added)
+                    {
+                        var newWagon = new Wagon();
+                        newWagon.Add(animal);
+                        wagons.Add(newWagon);
+                    }
+                }
+            }
+
+            return wagons;
+        }
+
+
+        public static void PrintWagons(List<Wagon> wagons)
+        {
+            for (int i = 0; i < wagons.Count; i++)
+            {
+                Console.WriteLine($"Wagon {i + 1}:");
+                foreach (var animal in wagons[i].Animals)
+                {
+                    Console.WriteLine($"  {animal.Name} - Size: {animal.Size}, Food: {animal.Food}");
+                }
+                Console.WriteLine();
+            }
+        }
+
+    }
+
+    //wagon.Size + (int) animal.Size <= 10 &&
+    //                    wagon.Animals.All(a => (a.Food != FoodType.Carnivore || (a.Food == FoodType.Carnivore && a.Size < animal.Size)))
 }
