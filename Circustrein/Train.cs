@@ -14,43 +14,70 @@ namespace Circustrein
             var wagons = new List<Wagon>();
             wagons.Add(new Wagon());
 
-            // Group animals by type and count
-            var groupedAnimals = animals.GroupBy(a => new { a.Food, a.Size })
-                                        .Select(g => new { Type = g.Key, Count = g.Count() })
-                                        .ToList();
+            List<Animal> carnivores = animals.FindAll(a => a.Food.Equals(FoodType.Carnivore)).ToList().OrderByDescending (a => a.Size).ToList();
+            List<Animal> herbivores = animals.FindAll(a => a.Food.Equals(FoodType.Herbivore)).ToList().OrderBy(a => a.Size).ToList();
+            List<Animal> allAnimals = carnivores.Concat(herbivores).ToList();
 
-            // Sort groups by food type, size, and count
-            var sortedGroups = groupedAnimals.OrderByDescending(g => g.Type.Food)
-                                             .ThenByDescending(g => g.Type.Size)
-                                             .ThenBy(g => g.Count)
-                                             .ToList();
-
-            foreach (var group in sortedGroups)
+            foreach(Animal animal in allAnimals)
             {
-                for (int i = 0; i < group.Count; i++)
+                bool added = false;
+
+                foreach (var wagon in wagons)
                 {
-                    var animal = new Animal { Food = group.Type.Food, Size = group.Type.Size };
-
-                    bool added = false;
-
-                    foreach (var wagon in wagons)
+                    if (wagon.CanAddAnimal(animal))
                     {
-                        if (wagon.CanAddAnimal(animal))
-                        {
-                            wagon.Add(animal);
-                            added = true;
-                            break;
-                        }
+                        wagon.Add(animal);
+                        added = true;
+                        break;
                     }
+                    
+                }
 
-                    if (!added)
-                    {
-                        var newWagon = new Wagon();
-                        newWagon.Add(animal);
-                        wagons.Add(newWagon);
-                    }
+                if (!added)
+                {
+                    var newWagon = new Wagon();
+                    newWagon.Add(animal);
+                    wagons.Add(newWagon);
                 }
             }
+
+            // Group animals by type and count
+            //var groupedAnimals = animals.GroupBy(a => new { a.Food, a.Size })
+            //                            .Select(g => new { Type = g.Key, Count = g.Count() })
+            //                            .ToList();
+
+            //// Sort groups by food type, size, and count
+            //var sortedGroups = groupedAnimals.OrderByDescending(g => g.Type.Food)
+            //                                 .ThenByDescending(g => g.Type.Size)
+            //                                 .ThenBy(g => g.Count)
+            //                                 .ToList();
+
+            //foreach (var group in sortedGroups)
+            //{
+            //    for (int i = 0; i < group.Count; i++)
+            //    {
+            //        var animal = new Animal { Food = group.Type.Food, Size = group.Type.Size };
+
+            //        bool added = false;
+
+            //        foreach (var wagon in wagons)
+            //        {
+            //            if (wagon.CanAddAnimal(animal))
+            //            {
+            //                wagon.Add(animal);
+            //                added = true;
+            //                break;
+            //            }
+            //        }
+
+            //        if (!added)
+            //        {
+            //            var newWagon = new Wagon();
+            //            newWagon.Add(animal);
+            //            wagons.Add(newWagon);
+            //        }
+            //    }
+            //}
 
             return wagons;
         }

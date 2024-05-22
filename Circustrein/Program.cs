@@ -14,11 +14,11 @@ namespace Circustrein
         {
             var animals = new List<Animal>();
 
-            AddAnimals(animals, "Large Carnivore", Size.Large, FoodType.Carnivore, 3);
-            AddAnimals(animals, "Medium Carnivore", Size.Medium, FoodType.Carnivore, 3);
-            AddAnimals(animals, "Small Carnivore", Size.Small, FoodType.Carnivore, 7);
-            AddAnimals(animals, "Large Herbivore", Size.Large, FoodType.Herbivore, 6);
-            AddAnimals(animals, "Medium Herbivore", Size.Medium, FoodType.Herbivore, 5);
+            AddAnimals(animals, "Large Carnivore", Size.Large, FoodType.Carnivore, 0);
+            AddAnimals(animals, "Medium Carnivore", Size.Medium, FoodType.Carnivore, 0);
+            AddAnimals(animals, "Small Carnivore", Size.Small, FoodType.Carnivore, 3);
+            AddAnimals(animals, "Large Herbivore", Size.Large, FoodType.Herbivore, 3);
+            AddAnimals(animals, "Medium Herbivore", Size.Medium, FoodType.Herbivore, 2);
             AddAnimals(animals, "Small Herbivore", Size.Small, FoodType.Herbivore, 0);
 
 

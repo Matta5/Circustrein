@@ -7,13 +7,16 @@ namespace Circustrein
 {
     public class Wagon
     {
-        public List<Animal> Animals { get; set; } = new List<Animal>();
+        public List<Animal> Animals { get; private set; } = new List<Animal>();
         public int maxSize { get; set; }
 
         public void Add(Animal animal)
         {
-            Animals.Add(animal);
-            maxSize += (int)animal.Size;
+            if (CanAddAnimal(animal))
+            {
+                Animals.Add(animal);
+                maxSize += (int)animal.Size;
+            }
         }
 
         public bool CanAddAnimal(Animal animal)
