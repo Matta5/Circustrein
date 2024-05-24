@@ -15,7 +15,7 @@ namespace Circustrein
             wagons.Add(new Wagon());
 
             List<Animal> carnivores = animals.FindAll(a => a.Food.Equals(FoodType.Carnivore)).ToList().OrderByDescending (a => a.Size).ToList();
-            List<Animal> herbivores = animals.FindAll(a => a.Food.Equals(FoodType.Herbivore)).ToList().OrderBy(a => a.Size).ToList();
+            List<Animal> herbivores = animals.FindAll(a => a.Food.Equals(FoodType.Herbivore)).ToList().OrderByDescending(a => a.Size).ToList();
             List<Animal> allAnimals = carnivores.Concat(herbivores).ToList();
 
             foreach(Animal animal in allAnimals)
@@ -26,7 +26,7 @@ namespace Circustrein
                 {
                     if (wagon.CanAddAnimal(animal))
                     {
-                        wagon.Add(animal);
+                        wagon.AddAnimal(animal);
                         added = true;
                         break;
                     }
@@ -36,48 +36,10 @@ namespace Circustrein
                 if (!added)
                 {
                     var newWagon = new Wagon();
-                    newWagon.Add(animal);
+                    newWagon.AddAnimal(animal);
                     wagons.Add(newWagon);
                 }
             }
-
-            // Group animals by type and count
-            //var groupedAnimals = animals.GroupBy(a => new { a.Food, a.Size })
-            //                            .Select(g => new { Type = g.Key, Count = g.Count() })
-            //                            .ToList();
-
-            //// Sort groups by food type, size, and count
-            //var sortedGroups = groupedAnimals.OrderByDescending(g => g.Type.Food)
-            //                                 .ThenByDescending(g => g.Type.Size)
-            //                                 .ThenBy(g => g.Count)
-            //                                 .ToList();
-
-            //foreach (var group in sortedGroups)
-            //{
-            //    for (int i = 0; i < group.Count; i++)
-            //    {
-            //        var animal = new Animal { Food = group.Type.Food, Size = group.Type.Size };
-
-            //        bool added = false;
-
-            //        foreach (var wagon in wagons)
-            //        {
-            //            if (wagon.CanAddAnimal(animal))
-            //            {
-            //                wagon.Add(animal);
-            //                added = true;
-            //                break;
-            //            }
-            //        }
-
-            //        if (!added)
-            //        {
-            //            var newWagon = new Wagon();
-            //            newWagon.Add(animal);
-            //            wagons.Add(newWagon);
-            //        }
-            //    }
-            //}
 
             return wagons;
         }
@@ -88,7 +50,7 @@ namespace Circustrein
             for (int i = 0; i < wagons.Count; i++)
             {
                 Console.WriteLine($"Wagon {i + 1}:");
-                foreach (var animal in wagons[i].Animals)
+                foreach (var animal in wagons[i].GetAnimals())  // Use GetAnimals method instead of Animals property
                 {
                     Console.WriteLine($"  {animal.Name} - Size: {animal.Size}, Food: {animal.Food}");
                 }

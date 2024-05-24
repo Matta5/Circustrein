@@ -1,29 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Circustrein;
+﻿using Circustrein;
 
-namespace Circustrein
+public class Wagon
 {
-    public class Wagon
+    private List<Animal> Animals { get; } = new List<Animal>();
+    private int size = 0;
+    private int maxSize = 10;
+    
+
+    public bool CanAddAnimal(Animal animal)
     {
-        public List<Animal> Animals { get; private set; } = new List<Animal>();
-        public int maxSize { get; set; }
+        return size + (int)animal.Size <= maxSize &&
+               Animals.All(a => (a.Food != FoodType.Carnivore || (a.Food == FoodType.Carnivore && a.Size < animal.Size)));
+    }
 
-        public void Add(Animal animal)
+    public void AddAnimal(Animal animal)
+    {
+        if (CanAddAnimal(animal))
         {
-            if (CanAddAnimal(animal))
-            {
-                Animals.Add(animal);
-                maxSize += (int)animal.Size;
-            }
-        }
-
-        public bool CanAddAnimal(Animal animal)
-        {
-            return maxSize + (int)animal.Size <= 10 &&
-                   Animals.All(a => (a.Food != FoodType.Carnivore || (a.Food == FoodType.Carnivore && a.Size < animal.Size)));
+            Animals.Add(animal);
+            size += (int)animal.Size;
         }
     }
 
+    public IEnumerable<Animal> GetAnimals()
+    {
+        return Animals.AsReadOnly();
+    }
 }

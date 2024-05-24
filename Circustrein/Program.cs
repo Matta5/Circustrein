@@ -12,39 +12,42 @@ namespace Circustrein
     {
         static void Main()
         {
-            var animals = new List<Animal>();
+            var animals = CreateAnimals();
+            var wagons = DistributeAnimals(animals);
+            PrintWagons(wagons);
+        }
 
+        private static List<Animal> CreateAnimals()
+        {
+            var animals = new List<Animal>();
             AddAnimals(animals, "Large Carnivore", Size.Large, FoodType.Carnivore, 0);
             AddAnimals(animals, "Medium Carnivore", Size.Medium, FoodType.Carnivore, 0);
             AddAnimals(animals, "Small Carnivore", Size.Small, FoodType.Carnivore, 3);
             AddAnimals(animals, "Large Herbivore", Size.Large, FoodType.Herbivore, 3);
             AddAnimals(animals, "Medium Herbivore", Size.Medium, FoodType.Herbivore, 2);
             AddAnimals(animals, "Small Herbivore", Size.Small, FoodType.Herbivore, 0);
+            return animals;
+        }
 
+        private static List<Wagon> DistributeAnimals(List<Animal> animals)
+        {
+            return Train.DistributeAnimals(animals);
+        }
 
-
-
-            var wagons = Train.DistributeAnimals(animals);
-
-
-            Train.PrintWagons(wagons);
-
-            int wagonCount = 0;
-            foreach (var wagon in wagons)
-            {
-                wagonCount++;
-            }
-            wagonCount.ToString();
-			Console.WriteLine($"{wagonCount} wagons needed for trafficing the whole circus.");
-		}
-        static void AddAnimals(List<Animal> animals, string name, Size size, FoodType food, int count)
+        private static void AddAnimals(List<Animal> animals, string name, Size size, FoodType food, int count)
         {
             for (int i = 0; i < count; i++)
             {
                 animals.Add(new Animal { Name = name, Size = size, Food = food });
             }
         }
-        
+
+        private static void PrintWagons(List<Wagon> wagons)
+        {
+            Train.PrintWagons(wagons);
+            Console.WriteLine($"{wagons.Count} wagons needed for trafficking the whole circus.");
+        }
+
     }
 }
 
